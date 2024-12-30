@@ -1,0 +1,30 @@
+<% title = 'signup' %>
+<div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="card p-4 shadow" style="max-width: 400px; width: 100%;">
+      <h2 class="text-center mb-4">Signup</h2>
+<% if (message){%>
+    <div style="color:red">
+        <ul>
+            <li><%= message %></li>
+        </ul>      
+    </div>
+<%}%>
+<% if(error){%>
+    <div style="color: red;">
+        <ul>
+            <%Object.values(error).forEach(err =>{%>
+            <li><%= err.message %></li>
+        <%});%>
+        </ul>
+    </div>
+    <%}%>
+<form action="/signup" method="post">
+    <label for="email" class="form-label">Email : </label>
+    <input type="text" id="email" class="form-control w-100" name="email"><br>
+    <label for="password" class="form-label">Password : </label>
+    <input type="password" id="password"  class="form-control w-100"  name="password"><br>
+    <label for="confirmPassword"class="form-label">Confirm Password : </label>
+    <input type="password" id="confirmPassword"  class="form-control w-100"name="confirmPassword"><br>
+    <button type="submit"class="btn btn-primary w-100" >Sign Up</button>
+</form>
+</div>

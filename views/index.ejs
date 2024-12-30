@@ -1,0 +1,61 @@
+<% title = 'Home' %>
+
+<style>
+    .hero{
+    background-size: cover;
+    background-position: center;
+    color: white;
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    }
+   .hero .a{
+    font-size: 100px;
+    font-weight: bold;
+    color: rgb(3, 3, 80);
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+    .hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    color: rgb(3, 3, 80);
+    font-weight: 800;
+}
+
+a {
+    margin-right: 10px; /* Adjust as needed */
+}
+
+</style>
+<section class="hero">
+    <div class="hero-content text-center">
+        <h1 class="a">Weight Loss Management Site</h1>
+        <h1>Achieve Your Ideal Weight</h1>
+        <p>Your journey to a healthier life starts here!</p>
+        <% if (isLoggedIn) { %>
+            <a href="/add-weight" class="btn btn-primary btn-lg">Add Weight</a>
+            <a href="/dashboard" class="btn btn-primary btn-lg">Dashboard</a>
+        <% } else { %>
+        <a href="/signup" class="btn btn-primary btn-lg">Sign Up</a>
+        <a href="/login" class="btn btn-primary btn-lg">Login </a>
+        <% } %>
+        <p style="text-align: center; color:brown; font: size 50px;"><%= email %></p>
+    </div>
+</section>

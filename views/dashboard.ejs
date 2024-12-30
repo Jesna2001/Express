@@ -1,0 +1,283 @@
+<% title='dashboard'%>
+    <style>
+        /* Styles for the dashboard and containers */
+    .container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+    justify-content: center;
+    display: block;
+    justify-items: center;
+}
+.card {
+    width: 500px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    text-align: center;
+    background-color: #f8f8f8;
+}
+.card-date {
+    font-weight: bold;
+    color: #333;
+}
+.card-weight {
+    font-size: 24px;
+    color: #021b36;
+    margin: 10px 0;
+}
+.btn-container {
+    display: flex;
+    justify-content: space-around;
+}
+.btn {
+    padding: 8px 12px;
+    margin: 5px;
+    color: white;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+.update-btn {
+    background-color: rgb(74, 74, 226);
+}
+.delete-btn {
+    background-color: rgb(2, 2, 49);
+}
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+}
+.pagination a {
+    margin: 0 5px;
+    text-decoration: none;
+    color: #073261;
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+.pagination a.active {
+    background-color: #073261;
+    color: white;
+}
+.modal { display: none;
+     position: fixed; 
+     z-index: 1; 
+     left: 0;
+     top: 0;
+     width: 100%; 
+     height: 100%; 
+     background-color: rgba(0, 0, 0, 0.4); }
+    .modal-content {
+         background-color:rgb(68, 68, 156);
+         margin: 15% auto;
+         padding: 20px; 
+         width: 300px; 
+         border-radius: 5px; }
+    .close { 
+        color: rgb(2, 2, 49);
+        float: right; 
+        font-size: 28px; 
+        font-weight: bold; 
+        cursor: pointer; }
+    .close:hover { 
+        color: black; }
+</style>
+
+<% title = 'Weight Dashboard' %>
+<h2 style="text-align: center; color:rgb(5, 5, 61) ;font-weight: 700;">Weight Dashboard</h2>
+
+<div class="container">
+    <% weights.forEach(weight => { %>
+    <div class="card">
+        <div class="card-date"><%= weight.date.toDateString() %></div>
+        <div class="card-weight"><%= weight.weight %> kg</div>
+        <div class="btn-container">
+            <!-- Update Button -->
+            <button onclick="openUpdateModal('<%= weight._id %>', '<%= weight.weight %>')" class="btn update-btn">Update</button>
+            <!-- Delete Button -->
+            <button onclick="openDeleteModal('<%= weight._id %>')" class="btn delete-btn">Delete</button>
+        </div>
+    </div>
+    <% }) %>
+</div>
+
+<!-- Update Modal -->
+<div id="updateModal" class="modal">
+    <div class="modal-content">
+        <span onclick="closeUpdateModal()" class="close">&times;</span>
+        <h3>Update Weight</h3>
+        <form id="updateForm">
+            <label for="updateWeight">Weight (kg):</label>
+            <input type="number" id="updateWeight" name="newWeight" required>
+            <button  style="background-color:rgb(118, 118, 209);" type="button" onclick="submitUpdate()" class="btn">Update</button>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <span onclick="closeDeleteModal()" class="close">&times;</span>
+        <h3 style="color:#ddd;">Are you sure you want to delete this entry?</h3>
+        <button type="button" onclick="submitDelete()" class="btn delete-btn">Yes, Delete</button>
+        <button type="button" onclick="closeDeleteModal()" class="btn">Cancel</button>
+    </div>
+</div>
+<div class="weightanalysis" style="display: flex;
+justify-content: center;
+align-items: center;
+font-weight: 600;">
+    <label for="startDate" style="color: white;">Start Date:</label>
+    <input type="date" id="startDate"  style="border: none;
+     background-color:rgb(3, 3, 95);
+     color: white;
+     margin-right: 20px;
+     padding: 10px;
+     border-radius: 10px;
+     "/>
+  
+    <label for="endDate" style="color: white;">End Date:</label>
+    <input type="date" id="endDate"  style="border: none;
+     background-color:rgb(3, 3, 95); 
+     color: white;
+     margin-right: 20px;
+     padding: 10px;
+     border-radius: 10px;"/>
+  
+    <button id="calculateDifference" style="border: none; 
+     background-color:rgb(3, 3, 95);
+      color: white;
+      padding: 10px;
+     border-radius: 10px; ">Calculate Weight Difference</button>
+  </div>
+  
+  <div id="result" style="color: rgb(3, 3, 95);
+   font-weight: 600;
+    font-size: xx-large;
+    display: flex;
+    justify-content: center;
+    align-items: center;">
+</div>
+
+<!-- JavaScript for Modals -->
+<script>
+    let currentWeightId = null;
+
+    function openUpdateModal(id, weight) {
+        currentWeightId = id;
+        document.getElementById('updateWeight').value = weight;
+        document.getElementById('updateModal').style.display = 'block';
+    }
+
+    function closeUpdateModal() {
+        document.getElementById('updateModal').style.display = 'none';
+        currentWeightId = null;
+    }
+
+    function openDeleteModal(id) {
+        currentWeightId = id;
+        document.getElementById('deleteModal').style.display = 'block';
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').style.display = 'none';
+        currentWeightId = null;
+    }
+
+    async function submitUpdate() {
+        const newWeight = document.getElementById('updateWeight').value;
+        try {
+            const response = await fetch(`/dashboard/weights/${currentWeightId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ newWeight })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                alert(data.message);
+                window.location.reload();
+            } else {
+                alert(data.message || 'Failed to update weight');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('An error occurred');
+        }
+        closeUpdateModal();
+    }
+
+    async function submitDelete() {
+        try {
+            const response = await fetch(`/dashboard/weights/${currentWeightId}`, {
+                method: 'DELETE'
+            });
+            const data = await response.json();
+            if (response.ok) {
+                alert(data.message);
+                window.location.reload();
+            } else {
+                alert(data.message || 'Failed to delete weight');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('An error occurred');
+        }
+        closeDeleteModal();
+    }
+
+    // Close modal if user clicks outside of it
+    window.onclick = function(event) {
+        if (event.target === document.getElementById('updateModal')) {
+            closeUpdateModal();
+        }
+        if (event.target === document.getElementById('deleteModal')) {
+            closeDeleteModal();
+        }
+    }
+
+    document.getElementById('calculateDifference').addEventListener('click', function () {
+      const startDate = document.getElementById('startDate').value;
+      const endDate = document.getElementById('endDate').value;
+  
+      if (startDate && endDate) {
+        fetch('/calculate-weight-difference', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ startDate, endDate }),
+        })
+          .then(response => response.json())
+          .then(data => {
+            document.getElementById('result').innerText = `Weight difference: ${data.difference} kg`;
+          })
+          .catch(error => console.error('Error:', error));
+      } else {
+        alert('Please select both dates');
+      }
+    });
+  </script>
+  
+
+
+<!-- Pagination Controls -->
+<div class="pagination">
+<% if (currentPage > 1) { %>
+<a href="?page=<%= currentPage - 1 %>">Previous</a>
+<% } %>
+
+<% for (let i = 1; i <= totalPages; i++) { %>
+<a href="?page=<%= i %>" class="<%= i === currentPage ? 'active' : '' %>"><%= i %></a>
+<% } %>
+
+<% if (currentPage < totalPages) { %>
+<a href="?page=<%= currentPage + 1 %>">Next</a>
+<% } %>
+</div>

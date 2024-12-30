@@ -1,0 +1,33 @@
+<% title = 'Login' %>
+
+<div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="card p-4 shadow bg-light" style="max-width: 400px; width: 100%;">
+      <h2 class="text-center mb-4">Login</h2>
+      <!-- for showing the validations -->
+<% if (errors && errors.length > 0) { %>
+    <div style="color: red; ">
+     <ul>
+         <% errors.forEach(function(error) { %>
+             <li><%= error.msg %></li>
+         <% }); %>
+     </ul>
+     </div>
+    <% } %>
+    <% if (message) { %>
+        <div style="color: red;">
+          <ul>
+           
+              <li><%= message %></li>
+         
+          </ul>
+        </div>
+      <% } %>
+<form action="/login" method="post">
+    <label class="form-label"><b>Email:</b></label><br>
+    <input type="text" class="form-control w-100" name="email"><br>
+    <label class="form-label"><b>Password:</b></label><br>
+    <input type="password"  class="form-control w-100" name="password"><br>
+    <input type="submit" class="btn btn-primary w-100" value="Login">
+</form>
+</div>
+</div>

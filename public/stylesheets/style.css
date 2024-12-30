@@ -1,0 +1,30 @@
+/* General body styles */
+body {
+  background-image: url('/images/background.jpg'); /* Background image for Home */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* Keeps the image fixed while scrolling */
+  transition: background-color 0.5s ease; /* Smooth transition for background color */
+}
+
+/* Faded background for non-home pages */
+.faded-background {
+  background-color: rgba(255, 255, 255, 0.8); /* Light overlay */
+  opacity: 0.9; /* Adjust opacity for fading effect */
+  transition: opacity 0.5s ease-in-out; /* Smooth transition for opacity */
+}
+
+/* Optional: Additional styles for a smoother transition */
+.faded-background {
+  animation: fadeEffect 0.5s forwards; /* Optional animation */
+}
+
+@keyframes fadeEffect {
+  from {
+      opacity: 0; /* Start hidden */
+  }
+  to {
+      opacity: 0.9; /* Fade to 0.9 */
+  }
+}
+

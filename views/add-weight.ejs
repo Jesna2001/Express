@@ -1,0 +1,40 @@
+<% title ="Add-weight"%>
+<style>
+    div h2{
+        color: black;
+        font-size: 50px;
+        text-align: center;
+    }
+    label{
+        color: black;
+        text-align: left;
+        font-size: 25px;
+    }
+    input{
+        width: 100px
+    }
+</style>
+
+<div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="card p-4 shadow" style="max-width: 400px; width: 100%;">
+      <h2 class="text-center mb-4">Add Today's Weight</h2>
+      <% if (message) { %>
+        <div style="color: red;">
+          <ul>
+           
+              <li><%= message %></li>
+         
+          </ul>
+        </div>
+      <% } %>
+    
+        <form action="/add-weight" method="POST">
+            <div class="mb-3">
+                <label for="weight" class="form-label">Weight (in kg)</label>
+                <input type="number" class="form-control" id="weight" name="weight" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Weight</button>
+            <a href="/" class="btn btn-secondary">Back to Home</a>
+        </form>
+    </div>
+</div>
